@@ -3,7 +3,8 @@ set(the_description "SFM algorithms")
 
 ### LIBMV LIGHT EXTERNAL DEPENDENCIES ###
 
-find_package(Ceres QUIET)
+#find_package(Ceres QUIET)
+find_package(Ceres REQUIRED)
 
 if(NOT DEFINED GFLAGS_LIBRARIES)
   set(GFLAGS_LIBRARIES "gflags")

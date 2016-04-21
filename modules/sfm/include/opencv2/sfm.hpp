@@ -33,6 +33,10 @@
  *
  */
 
+#define CERES_FOUND true
+//Added by mike to try to compile the python bindings
+
+
 #ifndef __OPENCV_SFM_HPP__
 #define __OPENCV_SFM_HPP__
 

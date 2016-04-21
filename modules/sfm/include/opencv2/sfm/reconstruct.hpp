@@ -42,6 +42,9 @@
 #ifndef __OPENCV_SFM_RECONSTRUCT_HPP__
 #define __OPENCV_SFM_RECONSTRUCT_HPP__
 
+#define CERES_FOUND true
+//Added by mike to try to compile the python bindings
+
 #include <vector>
 #include <string>
 
@@ -69,7 +72,7 @@ namespace sfm
    @note
     - Tracks must be as precise as possible. It does not handle outliers and is very sensible to them.
 */
-CV_EXPORTS
+CV_EXPORTS_W
 void
 reconstruct(InputArrayOfArrays points2d, OutputArray Ps, OutputArray points3d, InputOutputArray K,
             bool is_projective = false);
@@ -88,7 +91,7 @@ reconstruct(InputArrayOfArrays points2d, OutputArray Ps, OutputArray points3d, I
     - Tracks must be as precise as possible. It does not handle outliers and is very sensible to them.
     - To see a working example for camera motion reconstruction, check the following tutorial: @ref tutorial_sfm_trajectory_estimation.
 */
-CV_EXPORTS
+CV_EXPORTS_W
 void
 reconstruct(InputArrayOfArrays points2d, OutputArray Rs, OutputArray Ts, InputOutputArray K,
             OutputArray points3d, bool is_projective = false);
