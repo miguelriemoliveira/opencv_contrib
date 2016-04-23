@@ -58,10 +58,11 @@ namespace sfm
   void
   reconstruct_(const T &input, OutputArray Rs, OutputArray Ts, InputOutputArray K, OutputArray points3d, const bool refinement=true)
   {
+
     // Initial reconstruction
     const int keyframe1 = 1, keyframe2 = 2;
     const int select_keyframes = 1; // enable automatic keyframes selection
-    const int verbosity_level = -1; // mute libmv logs
+    const int verbosity_level = 1; // mute libmv logs
 
     // Refinement parameters
     const int refine_intrinsics = ( !refinement ) ? 0 :
@@ -87,6 +88,7 @@ namespace sfm
     //-- Run reconstruction pipeline
     reconstruction->run(input, K, Rs, Ts, points3d);
 
+printf("file %s line %d\n", __FILE__, __LINE__);
   }
 
 
@@ -130,15 +132,25 @@ namespace sfm
         std::vector<Mat> Rs, Ts;
         reconstruct(points2d, Rs, Ts, Ka, points3d, is_projective);
 
+printf("file %s line %d\n", __FILE__, __LINE__);
         // From Rs and Ts, extract Ps
         const int nviews = Rs.size();
+
+        printf("nviews after reconstruct %ld\n", nviews);
+printf("file %s line %d\n", __FILE__, __LINE__);
         Ps.create(nviews, 1, depth);
+
+printf("file %s line %d\n", __FILE__, __LINE__);
 
         Matx34d P;
         for (size_t i = 0; i < nviews; ++i)
         {
+
+printf("file %s line %d\n", __FILE__, __LINE__);
           projectionFromKRt(Ka, Rs[i], Vec3d(Ts[i]), P);
+printf("file %s line %d\n", __FILE__, __LINE__);
           Mat(P).copyTo(Ps.getMatRef(i));
+printf("file %s line %d\n", __FILE__, __LINE__);
         }
 
         Mat(Ka).copyTo(K.getMat());
@@ -162,8 +174,8 @@ namespace sfm
               OutputArray points3d, bool is_projective)
   {
     const int nviews = points2d.total();
+    printf("nviews = %d\n", nviews);
     CV_Assert( nviews >= 2 );
-
 
     // Projective reconstruction
 
@@ -172,6 +184,8 @@ namespace sfm
 
       // calls simple pipeline
       reconstruct_(points2d, Rs, Ts, K, points3d);
+
+printf("file %s line %d\n", __FILE__, __LINE__);
 
     }
 
@@ -202,9 +216,12 @@ namespace sfm
       std::vector<Mat> Rs, Ts;
       reconstruct(images, Rs, Ts, Ka, points3d, is_projective);
 
+      
+printf("file %s line %d\n", __FILE__, __LINE__);
       // From Rs and Ts, extract Ps
 
       const int nviews_est = Rs.size();
+      printf("nviews_est=%ld\n", nviews_est);
       Ps.create(nviews_est, 1, depth);
 
       Matx34d P;
@@ -214,6 +231,7 @@ namespace sfm
         Mat(P).copyTo(Ps.getMatRef(i));
       }
 
+printf("file %s line %d\n", __FILE__, __LINE__);
       Mat(Ka).copyTo(K.getMat());
       }
 

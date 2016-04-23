@@ -157,13 +157,17 @@ public:
 
   virtual void run(InputArrayOfArrays _points2d)
   {
+printf("file %s line %d\n", __FILE__, __LINE__);
+
     std::vector<Mat> points2d;
     _points2d.getMatVector(points2d);
     CV_Assert( _points2d.total() >= 2 );
+    printf("points2d.size()=%ld\n",points2d.size());
 
     // Parse 2d points to Tracks
     Tracks tracks;
     parser_2D_tracks(points2d, tracks);
+printf("file %s line %d\n", __FILE__, __LINE__);
 
     // Set libmv logs level
     libmv_initLogging("");
@@ -185,11 +189,13 @@ public:
   virtual void run(InputArrayOfArrays points2d, InputOutputArray K, OutputArray Rs,
                    OutputArray Ts, OutputArray points3d)
   {
+printf("file %s line %d\n", __FILE__, __LINE__);
     // Run the pipeline
     run(points2d);
-
+printf("file %s line %d\n", __FILE__, __LINE__);
     // Extract Data
     extractLibmvReconstructionData(K, Rs, Ts, points3d);
+printf("file %s line %d\n", __FILE__, __LINE__);
   }
 
 
@@ -242,7 +248,8 @@ public:
       for ( int j = 0; j < 3; ++j )
         point3d[j] =
           libmv_reconstruction_.reconstruction.AllPoints()[i].X[j];
-      Mat(point3d).copyTo(points3d.getMatRef(i));
+      //Mat(point3d).copyTo(points3d.getMatRef(i));
+      points3d.getMat(i) = Mat(point3d).clone();
     }
 
   }
@@ -258,17 +265,35 @@ public:
     const size_t n_views =
       libmv_reconstruction_.reconstruction.AllCameras().size();
 
+    cout << "number of views = " << n_views << endl;
     Rs.create(n_views, 1, CV_64F);
     Ts.create(n_views, 1, CV_64F);
+
 
     Matx33d R;
     Vec3d t;
     for(size_t i = 0; i < n_views; ++i)
     {
+      printf("view %ld\n", i);
       eigen2cv(libmv_reconstruction_.reconstruction.AllCameras()[i].R, R);
       eigen2cv(libmv_reconstruction_.reconstruction.AllCameras()[i].t, t);
-      Mat(R).copyTo(Rs.getMatRef(i));
-      Mat(t).copyTo(Ts.getMatRef(i));
+        cout << "R=" << R << endl;
+        cout << "t=" << t << endl;
+
+      printf("Rs[%ld] rows=%d cols=%d\n",i, Rs.getMat(i).rows,Rs.getMat(i).cols);
+
+printf("file %s line %d\n", __FILE__, __LINE__);
+
+      //Rs.getMat(i) = Mat_<double>(3,3);
+      //Mat(R).copyTo(Rs.getMat(i));
+      Rs.getMat(i) = Mat(R).clone();
+
+      printf("after Rs[%ld] rows=%d cols=%d\n",i, Rs.getMat(i).rows,Rs.getMat(i).cols);
+printf("file %s line %d\n", __FILE__, __LINE__);
+      //Ts.getMat(i) = Mat_<double>(1,3);
+      //Mat(t).copyTo(Ts.getMatRef(i));
+      Ts.getMat(i) = Mat(t).clone();
+printf("file %s line %d\n", __FILE__, __LINE__);
     }
   }
 
@@ -290,9 +315,29 @@ private:
                                  OutputArray Ts,
                                  OutputArray points3d)
   {
+    printf("file %s line %d\n", __FILE__, __LINE__);
+
+    //int nDims = Rs.getMat().dims;
+    //printf("Rs has %d dims\n", nDims);
+    //for (size_t i=0; i < nDims; ++i)
+    //{
+        //printf("Rs dim%ld=%d\n",i, Rs.getMat().size[i]);
+    //}
+
+    //int nDimsTs = Ts.getMatRef().dims;
+    //printf("Ts has %d dims\n", nDims);
+    //for (size_t i=0; i < nDimsTs; ++i)
+    //{
+        //printf("Ts dim%ld=%d\n",i, Ts.getMatRef().size[i]);
+    //}
+
+printf("file %s line %d\n", __FILE__, __LINE__);
     getCameras(Rs, Ts);
+printf("file %s line %d\n", __FILE__, __LINE__);
     getPoints(points3d);
+printf("file %s line %d\n", __FILE__, __LINE__);
     getIntrinsics().copyTo(K.getMat());
+printf("file %s line %d\n", __FILE__, __LINE__);
   }
 
   libmv_Reconstruction libmv_reconstruction_;

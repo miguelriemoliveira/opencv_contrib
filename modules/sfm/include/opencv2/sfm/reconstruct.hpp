@@ -91,7 +91,7 @@ reconstruct(InputArrayOfArrays points2d, OutputArray Ps, OutputArray points3d, I
     - Tracks must be as precise as possible. It does not handle outliers and is very sensible to them.
     - To see a working example for camera motion reconstruction, check the following tutorial: @ref tutorial_sfm_trajectory_estimation.
 */
-CV_EXPORTS_W
+CV_EXPORTS_AS(reconstruct2)
 void
 reconstruct(InputArrayOfArrays points2d, OutputArray Rs, OutputArray Ts, InputOutputArray K,
             OutputArray points3d, bool is_projective = false);
