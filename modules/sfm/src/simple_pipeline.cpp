@@ -223,8 +223,8 @@ printf("file %s line %d\n", __FILE__, __LINE__);
   }
 
 
-  virtual void run(const std::vector <string> &images, InputOutputArray K, OutputArray Rs,
-                   OutputArray Ts, OutputArray points3d)
+  virtual void run(const std::vector <string> &images, InputOutputArray K, OutputArrayOfArrays Rs,
+                   OutputArrayOfArrays Ts, OutputArrayOfArrays points3d)
   {
     // Run the pipeline
     run(images);
@@ -236,7 +236,7 @@ printf("file %s line %d\n", __FILE__, __LINE__);
   virtual double getError() const { return libmv_reconstruction_.error; }
 
   virtual void
-  getPoints(OutputArray points3d) {
+  getPoints(OutputArrayOfArrays points3d) {
     const size_t n_points =
       libmv_reconstruction_.reconstruction.AllPoints().size();
 
@@ -248,8 +248,8 @@ printf("file %s line %d\n", __FILE__, __LINE__);
       for ( int j = 0; j < 3; ++j )
         point3d[j] =
           libmv_reconstruction_.reconstruction.AllPoints()[i].X[j];
-      //Mat(point3d).copyTo(points3d.getMatRef(i));
-      points3d.getMat(i) = Mat(point3d).clone();
+      Mat(point3d).copyTo(points3d.getMatRef(i));
+      //points3d.getMat(i) = Mat(point3d).clone();
     }
 
   }
@@ -266,9 +266,16 @@ printf("file %s line %d\n", __FILE__, __LINE__);
       libmv_reconstruction_.reconstruction.AllCameras().size();
 
     cout << "number of views = " << n_views << endl;
+    //Rs = noArray();
     Rs.create(n_views, 1, CV_64F);
     Ts.create(n_views, 1, CV_64F);
 
+    //printf("Rs.kind() = %d\n", Rs.kind());
+      printf("file %s line %d\n", __FILE__, __LINE__);
+    //Rs.getMat(0).create(3,3,CV_64F);
+      //printf("file %s line %d\n", __FILE__, __LINE__);
+      //Mat a = Rs.getMatRef(0);
+      //printf("file %s line %d\n", __FILE__, __LINE__);
 
     Matx33d R;
     Vec3d t;
@@ -282,17 +289,20 @@ printf("file %s line %d\n", __FILE__, __LINE__);
 
       printf("Rs[%ld] rows=%d cols=%d\n",i, Rs.getMat(i).rows,Rs.getMat(i).cols);
 
-printf("file %s line %d\n", __FILE__, __LINE__);
+      printf("file %s line %d\n", __FILE__, __LINE__);
 
+      //Mat a = Rs.getMatRef(i);
+
+      printf("file %s line %d\n", __FILE__, __LINE__);
       //Rs.getMat(i) = Mat_<double>(3,3);
-      //Mat(R).copyTo(Rs.getMat(i));
-      Rs.getMat(i) = Mat(R).clone();
+      Mat(R).copyTo(Rs.getMatRef(i));
+      //Rs.getMat(i) = Mat(R).clone();
 
       printf("after Rs[%ld] rows=%d cols=%d\n",i, Rs.getMat(i).rows,Rs.getMat(i).cols);
 printf("file %s line %d\n", __FILE__, __LINE__);
       //Ts.getMat(i) = Mat_<double>(1,3);
-      //Mat(t).copyTo(Ts.getMatRef(i));
-      Ts.getMat(i) = Mat(t).clone();
+      Mat(t).copyTo(Ts.getMatRef(i));
+      //Ts.getMat(i) = Mat(t).clone();
 printf("file %s line %d\n", __FILE__, __LINE__);
     }
   }
@@ -332,11 +342,9 @@ private:
     //}
 
 printf("file %s line %d\n", __FILE__, __LINE__);
-    getCameras(Rs, Ts);
-printf("file %s line %d\n", __FILE__, __LINE__);
     getPoints(points3d);
 printf("file %s line %d\n", __FILE__, __LINE__);
-    getIntrinsics().copyTo(K.getMat());
+    getIntrinsics().copyTo(K.getMatRef());
 printf("file %s line %d\n", __FILE__, __LINE__);
   }
 

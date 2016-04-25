@@ -62,7 +62,7 @@ namespace sfm
     // Initial reconstruction
     const int keyframe1 = 1, keyframe2 = 2;
     const int select_keyframes = 1; // enable automatic keyframes selection
-    const int verbosity_level = 1; // mute libmv logs
+    const int verbosity_level = -1; // mute libmv logs
 
     // Refinement parameters
     const int refine_intrinsics = ( !refinement ) ? 0 :
@@ -170,12 +170,24 @@ printf("file %s line %d\n", __FILE__, __LINE__);
 
 
   void
-  reconstruct(InputArrayOfArrays points2d, OutputArray Rs, OutputArray Ts, InputOutputArray K,
+  reconstruct(InputArrayOfArrays points2d, OutputArrayOfArrays Rs, OutputArrayOfArrays Ts, InputOutputArray K,
               OutputArray points3d, bool is_projective)
   {
     const int nviews = points2d.total();
     printf("nviews = %d\n", nviews);
     CV_Assert( nviews >= 2 );
+
+    cout << "number of views = " << nviews << endl;
+    //Rs.create(n_views, 1, CV_64F);
+    //Ts.create(n_views, 1, CV_64F);
+
+    //printf("Rs.kind() = %d\n", Rs.kind());
+      //printf("file %s line %d\n", __FILE__, __LINE__);
+    //Rs.getMat(0).create(3,3,CV_64F);
+      printf("file %s line %d\n", __FILE__, __LINE__);
+      Mat a = Rs.getMatRef(0);
+      printf("file %s line %d\n", __FILE__, __LINE__);
+
 
     // Projective reconstruction
 

@@ -93,7 +93,7 @@ reconstruct(InputArrayOfArrays points2d, OutputArray Ps, OutputArray points3d, I
 */
 CV_EXPORTS_AS(reconstruct2)
 void
-reconstruct(InputArrayOfArrays points2d, OutputArray Rs, OutputArray Ts, InputOutputArray K,
+reconstruct(InputArrayOfArrays points2d, OutputArrayOfArrays Rs, OutputArrayOfArrays Ts, InputOutputArray K,
             OutputArray points3d, bool is_projective = false);
 
 /** @brief Reconstruct 3d points from 2d images while performing autocalibration.
